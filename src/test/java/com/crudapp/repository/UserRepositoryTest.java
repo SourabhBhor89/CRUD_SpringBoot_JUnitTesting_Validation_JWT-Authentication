@@ -26,26 +26,26 @@ public class UserRepositoryTest {
     @Rollback(value = false) // Set to false if you want the user to persist for other tests
     public void setUp() {
         // Create and save a user with ID 11 for testing
-        UserEntity userEntity = new UserEntity(11L, "DSA", "XYZ");
+        UserEntity userEntity = new UserEntity(112L, "DSA", "XYZ");
         userRepo.save(userEntity);
     }
 
     @Test
     @Rollback(value = false)
     public void saveUserTest() {
-        UserEntity userEntity = new UserEntity(12L, "New User", "Password");
+        UserEntity userEntity = new UserEntity(112L, "New User", "Password");
         UserEntity savedUser = userRepo.save(userEntity);
 
         // Check if the saved user's ID is not null and matches
-        Assertions.assertThat(savedUser.getId()).isEqualTo(703L);
+        Assertions.assertThat(savedUser.getId()).isEqualTo(112L);
     }
 
     @Test
     public void getUserTest() {
-        UserEntity userEntity = userRepo.findById(703L)
+        UserEntity userEntity = userRepo.findById(112L)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        Assertions.assertThat(userEntity.getId()).isEqualTo(703L);
+        Assertions.assertThat(userEntity.getId()).isEqualTo(112L);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class UserRepositoryTest {
 
     @Test
     public void updateUserTest() {
-        UserEntity userEntity = userRepo.findById(703L)
+        UserEntity userEntity = userRepo.findById(112L)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userEntity.setPassword("400");
         UserEntity userUpdate = userRepo.save(userEntity);
@@ -67,11 +67,11 @@ public class UserRepositoryTest {
     @Test
     @Rollback(value = false)
     public void deleteUserTest() {
-        UserEntity userEntity = userRepo.findById(703L)
+        UserEntity userEntity = userRepo.findById(112L)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         userRepo.delete(userEntity);
 
-        Optional<UserEntity> optionalUser = userRepo.findById(703L);
+        Optional<UserEntity> optionalUser = userRepo.findById(112L);
         Assertions.assertThat(optionalUser).isEmpty();
     }
 }

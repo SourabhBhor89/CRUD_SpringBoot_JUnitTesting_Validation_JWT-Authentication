@@ -45,12 +45,6 @@ public class UserController {
         return userEntity;
     }
 
-//    @GetMapping("/getUserById/{userid}")
-//    public UserEntity getuser(@PathVariable("userid") long userid)
-//    {
-//        return userService.getUserById(userid);
-//    }
-
 
     @GetMapping("/getAllUsers")
     public List<UserEntity> getAllUsers()

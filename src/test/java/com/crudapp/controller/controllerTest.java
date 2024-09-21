@@ -80,18 +80,6 @@ public class controllerTest {
     }
 
 
-//    @Test
-//    public void updateUserTest() throws Exception {
-//        String jsonRequest = objectMapper.writeValueAsString(userEntity);
-//        when(userService.update(Mockito.anyLong(),Mockito.any(UserEntity.class).getId())).thenReturn(userEntity);
-//        MvcResult mvcResult = mockMvc
-//                .perform(put("/updateUser").content(jsonRequest).contentType(MediaType.APPLICATION_JSON_VALUE))
-//                .andExpect(status().isOk()).andReturn();
-//        String expectedOutput = mvcResult.getResponse().getContentAsString();
-//        UserEntity expectedOutputUser = objectMapper.readValue(expectedOutput, UserEntity.class);
-//        assertEquals(expectedOutputUser.getPassword(), userEntity.getPassword());
-//    }
-
 
 
     @Test

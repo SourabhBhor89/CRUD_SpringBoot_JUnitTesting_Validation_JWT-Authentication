@@ -18,7 +18,7 @@ public class UserService {
     public UserEntity saveUser(UserEntity userEntity)
     {
         return userRepo.save(userEntity);
-}
+    }
 
 
     public List<UserEntity> getAllUsers()
@@ -31,7 +31,7 @@ public class UserService {
 
     public long delete(long id)
     {
-         userRepo.deleteById(id);
+        userRepo.deleteById(id);
         return id;
     }
 
@@ -44,9 +44,9 @@ public class UserService {
         UserEntity user = userRepo.findById(userId).orElse(null);
         System.out.println(user);
         if(user != null ){
-           user.setName(updatedUserEntity.getName());
-           user.setPassword(updatedUserEntity.getPassword());
-           return userRepo.save(user);
+            user.setName(updatedUserEntity.getName());
+            user.setPassword(updatedUserEntity.getPassword());
+            return userRepo.save(user);
         }
         return null;
     }
