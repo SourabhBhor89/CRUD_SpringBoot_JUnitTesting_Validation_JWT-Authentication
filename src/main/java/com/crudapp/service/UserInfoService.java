@@ -47,10 +47,12 @@ public class UserInfoService implements UserDetailsService {
     }
 
     public void deleteUser(Integer id) {
-        if (!repository.existsById(id)) {
+        if (repository.existsById(id)) {
+            repository.deleteById(id);
+
+        } else {
             throw new UsernameNotFoundException("User not found with ID: " + id);
         }
-        repository.deleteById(id);
     }
 
 

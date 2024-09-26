@@ -43,7 +43,7 @@ public class JwtService {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-    private Claims extractAllClaims(String token) {
+    Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
                 .setSigningKey(getSignKey())
@@ -51,7 +51,7 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
-    private Boolean isTokenExpired(String token) {
+    Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
     public Boolean validateToken(String token, UserDetails userDetails) {
