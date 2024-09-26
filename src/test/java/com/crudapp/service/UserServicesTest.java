@@ -1,16 +1,15 @@
 package com.crudapp.service;
 
-
-import com.crudapp.entity.UserEntity;
-import com.crudapp.repo.UserRepo;
-import org.apache.catalina.User;
+import com.crudapp.entity.UserInfo;
+import com.crudapp.repo.UserInfoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,108 +18,70 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@DataJpaTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@ExtendWith(MockitoExtension.class) // This initializes the mocks
 public class UserServicesTest {
 
-    UserEntity userEntity1;
-    UserEntity userEntity2;
-    List<UserEntity> Userlist;
+    UserInfo userInfo;
+    List<UserInfo> userList;
 
     @Mock
-    UserRepo userRepo;
+    UserInfoRepository userInfoRepository;  // Mock the repository
+
+    @Mock
+    PasswordEncoder passwordEncoder; // Mock the PasswordEncoder
 
     @InjectMocks
-    UserService userService;
+    UserInfoService userInfoService;  // Inject mocks into the service
 
     @BeforeEach
-    void setup()
-    {
-        Userlist=getUserList();
-        userEntity1=getUser();
-        userEntity2=getUser();
+    void setup() {
+        userList = getUserList();
+        userInfo = getUser();
     }
 
     @Test
-    public void saveTest()
-    {
-        when(userRepo.save(Mockito.any(UserEntity.class))).thenReturn(userEntity1);
-        UserEntity actualoutput = userService.saveUser(userEntity1);
-        assertEquals(userEntity1.toString(), actualoutput.toString());
-
+    public void saveTest() {
+        when(passwordEncoder.encode(Mockito.any(CharSequence.class))).thenReturn("encodedPassword"); // Mock encoding
+        when(userInfoRepository.save(Mockito.any(UserInfo.class))).thenReturn(userInfo);
+        String actualOutput = userInfoService.addUser(userInfo);
+        assertEquals("User Added Successfully", actualOutput);
     }
 
     @Test
-    public void getAllUsersTest()
-    {
-        when(userRepo.findAll()).thenReturn(Userlist);
-        List<UserEntity> actualUserList = userService.getAllUsers();
-        assertEquals(actualUserList.size(), Userlist.size());
-
-
-    }
-
-
-    @Test
-    public void deleteTest(){
-
-        when(userRepo.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(userEntity1));
-        int id = Math.toIntExact(userService.delete(userEntity1.getId()));
-        assertEquals(userEntity1.getId(), id);
-
-
+    public void getAllUsersTest() {
+        when(userInfoRepository.findAll()).thenReturn(userList);
+        List<UserInfo> actualUserList = userInfoService.getAllUsersInfo();
+        assertEquals(actualUserList.size(), userList.size());
     }
 
     @Test
-    public void getByIdTest()
-    {
-        when(userRepo.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(userEntity1));
-        UserEntity actualOutput =userService.getUserById(userEntity1.getId());
-        assertEquals(actualOutput.toString(), userEntity1.toString());
-
+    public void deleteTest() {
+        when(userInfoRepository.existsById(Mockito.anyInt())).thenReturn(true);
+        Mockito.doNothing().when(userInfoRepository).deleteById(Mockito.anyInt());
+        userInfoService.deleteUser(userInfo.getId());
     }
 
     @Test
-    public void updateTest()
-    {
-        when(userRepo.findById(Mockito.anyLong())).thenReturn(Optional.ofNullable(userEntity2));
-        when(userRepo.save(Mockito.any(UserEntity.class))).thenReturn(userEntity1);
-        UserEntity actualOutput = userService.update(userEntity1.getId(), userEntity1);
-        assertEquals(userEntity1.toString(), actualOutput.toString());
-
+    public void getByIdTest() {
+        when(userInfoRepository.findById(Mockito.anyInt())).thenReturn(Optional.of(userInfo));
+        UserInfo actualOutput = userInfoService.getUserById(userInfo.getId());
+        assertEquals(actualOutput.toString(), userInfo.toString());
     }
 
-
-    private List<UserEntity> getUserList() {
-        List<UserEntity> userEntityList = new ArrayList<>();
-
-        UserEntity userEntity1=new UserEntity();
-
-        userEntity1.setName("cccc");
-        userEntity1.setPassword("ddd");
-
-        UserEntity userEntity2=new UserEntity();
-        userEntity1.setName("fff");
-        userEntity1.setPassword("eee");
-
-        UserEntity userEntity3=new UserEntity();
-        userEntity1.setName("rrr");
-        userEntity1.setPassword("ttt");
-
-
-
-        Userlist.add(userEntity1);
-        Userlist.add(userEntity2);
-        Userlist.add(userEntity3);
-        return Userlist;
+    // Helper methods to create mock data
+    private List<UserInfo> getUserList() {
+        List<UserInfo> userEntityList = new ArrayList<>();
+        userEntityList.add(getUser());
+        return userEntityList;
     }
 
-    private UserEntity getUser() {
-        UserEntity user=new UserEntity();
-        user.setName("aaabbb");
-        user.setPassword("bbb");
-
+    private UserInfo getUser() {
+        UserInfo user = new UserInfo();
+        user.setId(1);
+        user.setName("Test User");
+        user.setEmail("test@example.com");
+        user.setPassword("password");
+        user.setRoles("USER");
         return user;
     }
-
 }
